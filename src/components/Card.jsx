@@ -4,7 +4,7 @@ function Card(props) {
     <div>
       <h1>{props.username}</h1>
       <p>{props.email}</p>
-      <p>{props.password}</p>
+      <button onClick={props.buttonClick}>DELETE</button>
     </div>
   )
 }

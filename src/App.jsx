@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Form from "./components/Form";
 import Card from "./components/Card";
 
@@ -10,6 +10,8 @@ const reducer = (state, action) => {
       return { ...state, email: action.payload };
     case "PASSWORD":
       return { ...state, password: action.payload };
+    case "ID":
+      return { ...state, id: action.payload };
     case "RESET":
       return { username: "", email: "", password: "" };
     default:
@@ -23,17 +25,26 @@ function App() {
     username: "",
     email: "",
     password: "",
+    id: 0,
   });
-
-  const changeHandler = (event, type) =>
+  const changeHandler = (event, type) => {
     dispatch({ payload: event.target.value, type });
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (state.username !== "" || state.email !== "" || state.password !== "")
-      setPeople((prev) => [...prev, state]);
+    setPeople((prev) => [...prev, state]);
     dispatch({ type: "RESET" });
   };
+  const deleteHandler = (id) => {
+    setPeople((prev) => prev.filter((item) => item.id !== id));
+  };
+  useEffect(() => {
+    dispatch({
+      type: "ID",
+      payload: people.length < 1 ? 0 : people[people.length - 1].id + 1,
+    });
+  }, [people]);
   return (
     <div>
       <Form
@@ -43,6 +54,7 @@ function App() {
       />
       {people.map((person, index) => (
         <Card
+          buttonClick={() => deleteHandler(person.id)}
           key={index}
           username={person.username}
           email={person.email}
